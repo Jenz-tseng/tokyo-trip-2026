@@ -103,7 +103,9 @@ section { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 70px); display
 
 /* ---------- 首頁 ---------- */
 .hero { overflow: hidden; }
-.hero svg { display: block; width: 100%; height: auto; border-bottom: var(--line); background: var(--water-pale); }
+.hero svg { display: block; width: 100%; height: auto; border-bottom: var(--line); background: #27304A; }
+.chase { animation: chase 1.4s linear infinite; }
+@keyframes chase { to { stroke-dashoffset: -24; } }
 .hero-body { padding: 18px 20px 22px; display: grid; gap: 14px; }
 .hero h1 { font-size: clamp(28px, 8vw, 36px); line-height: 1.25; }
 .hero .sub { color: var(--ink-soft); font-size: 15px; }
@@ -256,9 +258,10 @@ footer .greet { font-size: 18px; color: var(--on-sky); }
 
 /* 背景場景：固定在內容後方，兩個場景交叉淡入淡出 */
 .scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; transition: opacity .8s ease; }
-.scene-hakone { opacity: 0; }
-body[data-scene="hakone"] .scene-night { opacity: 0; }
-body[data-scene="hakone"] .scene-hakone { opacity: 1; }
+.scene-hakone, .scene-tree { opacity: 0; }
+body[data-scene="hakone"] .scene-night, body[data-scene="tree"] .scene-night { opacity: 0; }
+body[data-scene="hakone"] .scene-hakone, body[data-scene="tree"] .scene-tree { opacity: 1; }
+.scene .tree-land { position: absolute; left: 0; bottom: 0; width: 100%; height: clamp(340px, 74vh, 780px); display: block; overflow: visible; }
 .scene .land { position: absolute; left: 0; bottom: 0; width: 100%; height: clamp(190px, 42vh, 420px); display: block; }
 .bokeh {
   position: absolute; left: var(--l); top: var(--t); width: var(--s); height: var(--s);
@@ -353,46 +356,25 @@ body { margin: 0; }
   <!-- 首頁 -->
   <section id="home">
     <div class="card hero">
-      <svg viewBox="0 0 400 240" role="img" aria-label="富士山、蘆之湖海賊船、鳥居與箱根空中纜車的插圖">
-        <defs>
-          <path id="cloud" d="M50 80 h60 a12 12 0 0 0 0 -24 a16 16 0 0 0 -28 -8 a12 12 0 0 0 -20 8 a12 12 0 0 0 -12 24 z" fill="#fff" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"/>
-        </defs>
-        <g fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <circle class="a-glow" cx="360" cy="50" r="20" fill="#F6D27A"/>
-          <g class="a-drift"><use href="#cloud" x="-24" y="-22"/></g>
-          <g class="a-drift slow"><use href="#cloud" x="196" y="-8"/></g>
-          <g class="a-float">
-            <path d="M146 34 h34 a6 6 0 0 1 0 12 h-34 l-8 -8 z" fill="#fff"/>
-            <path d="M160 40 l-6 14 h8 l10 -14" fill="#F2A497"/>
-            <path d="M144 36 l-6 -9 h6 l6 7" fill="#F2A497"/>
-          </g>
-          <path d="M90 200 L176 92 Q200 80 224 92 L310 200 Z" fill="#A8D3E6"/>
-          <path d="M176 92 Q200 80 224 92 L240 112 L226 106 L214 116 L200 104 L186 116 L174 106 L160 112 Z" fill="#fff"/>
-          <line x1="-4" y1="64" x2="128" y2="112"/>
-          <g class="a-swing" style="transform-origin:60px 86px">
-            <line x1="60" y1="86" x2="60" y2="96"/>
-            <rect x="47" y="96" width="26" height="22" rx="6" fill="#F6D27A"/>
-            <rect x="52" y="101" width="16" height="8" rx="2" fill="#fff" stroke-width="2.5"/>
-          </g>
-          <path d="M-10 206 Q50 172 120 200 Q190 180 250 202 Q320 176 410 204 V214 H-10 Z" fill="#B9DAA5"/>
-          <path d="M-10 212 H410 V250 H-10 Z" fill="#DDEFF6"/>
-          <path d="M180 226 q8 -5 16 0 M250 234 q8 -5 16 0 M22 232 q8 -5 16 0" stroke-width="2.5"/>
-          <g>
-            <path d="M310 172 Q340 165 370 172 L368 179 Q340 173 312 179 Z" fill="#F2A497"/>
-            <rect x="318" y="185" width="44" height="6" rx="2" fill="#F2A497"/>
-            <rect x="323" y="177" width="7" height="42" rx="2" fill="#F2A497"/>
-            <rect x="350" y="177" width="7" height="42" rx="2" fill="#F2A497"/>
-          </g>
-          <g class="a-bob">
-            <line x1="110" y1="214" x2="110" y2="172"/>
-            <path d="M110 172 l13 4 l-13 4" fill="#F2A497" stroke-width="2.5"/>
-            <path d="M113 182 L138 210 H113 Z" fill="#fff"/>
-            <path d="M107 188 L86 210 H107 Z" fill="#F6D27A"/>
-            <path d="M66 212 H154 L143 230 H80 Z" fill="#F2A497"/>
-            <circle cx="96" cy="221" r="2.5" fill="#3E3A39" stroke="none"/>
-            <circle cx="110" cy="221" r="2.5" fill="#3E3A39" stroke="none"/>
-            <circle cx="124" cy="221" r="2.5" fill="#3E3A39" stroke="none"/>
-          </g>
+      <svg viewBox="0 0 400 240" role="img" aria-label="東京聖誕點燈街道：兩排掛滿燈飾的行道樹，盡頭是點燈的東京鐵塔">
+        <rect width="400" height="240" fill="#27304A"/>
+        <g stroke="#1B2135" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <g fill="#FFFCF6" stroke="none" class="a-drift"><circle cx="30" cy="60" r="2"/><circle cx="120" cy="40" r="1.6"/><circle cx="260" cy="58" r="2"/><circle cx="350" cy="44" r="1.6"/><circle cx="80" cy="96" r="1.4"/><circle cx="320" cy="100" r="1.4"/></g>
+          <rect x="0" y="92" width="46" height="110" fill="#36405F"/><rect x="42" y="118" width="40" height="84" fill="#36405F"/><rect x="80" y="104" width="34" height="98" fill="#36405F"/>
+          <rect x="286" y="108" width="36" height="94" fill="#36405F"/><rect x="318" y="90" width="44" height="112" fill="#36405F"/><rect x="358" y="116" width="46" height="86" fill="#36405F"/>
+          <g fill="#F6D27A" stroke="none" opacity=".85"><rect x="10" y="104" width="7" height="9"/><rect x="26" y="122" width="7" height="9"/><rect x="10" y="140" width="7" height="9"/><rect x="52" y="130" width="7" height="9"/><rect x="90" y="116" width="7" height="9"/><rect x="98" y="134" width="7" height="9"/><rect x="296" y="120" width="7" height="9"/><rect x="330" y="102" width="7" height="9"/><rect x="346" y="120" width="7" height="9"/><rect x="330" y="138" width="7" height="9"/><rect x="370" y="128" width="7" height="9"/><rect x="386" y="146" width="7" height="9"/></g>
+          <line x1="200" y1="40" x2="200" y2="22"/>
+          <path d="M172 170 L190 110 L195 80 L198 56 L200 40 L202 56 L205 80 L210 110 L228 170 Z" fill="#F2A497"/>
+          <path d="M181 140 H219 M190 110 H210 M195 80 H205" fill="none"/>
+          <rect x="186" y="104" width="28" height="9" rx="2" fill="#F6D27A"/><rect x="193" y="76" width="14" height="7" rx="2" fill="#F6D27A"/>
+          <path d="M-4 240 V184 L186 166 H214 L404 184 V240 Z" fill="#2A3150"/>
+          <path d="M84 240 L190 166 H210 L316 240 Z" fill="#323C5A"/>
+          <path d="M200 174 V178 M200 188 V196 M200 208 V222" stroke="#F6D27A" stroke-width="3"/>
+          <g fill="#2A2F45"><rect x="171" y="160" width="4" height="10"/><rect x="225" y="160" width="4" height="10"/><rect x="150" y="164" width="5" height="14"/><rect x="245" y="164" width="5" height="14"/><rect x="109" y="172" width="7" height="22"/><rect x="284" y="172" width="7" height="22"/><rect x="43" y="186" width="10" height="40"/><rect x="347" y="186" width="10" height="40"/></g>
+          <g fill="#2E3A5C"><ellipse cx="173" cy="156" rx="9" ry="8"/><ellipse cx="227" cy="156" rx="9" ry="8"/><ellipse cx="152" cy="156" rx="16" ry="14"/><ellipse cx="248" cy="156" rx="16" ry="14"/><ellipse cx="112" cy="160" rx="27" ry="23"/><ellipse cx="288" cy="160" rx="27" ry="23"/><ellipse cx="48" cy="168" rx="42" ry="36"/><ellipse cx="352" cy="168" rx="42" ry="36"/></g>
+          <g id="hero-lights" stroke="none"></g>
+          <path class="chase" d="M-4 14 Q100 44 200 20 Q300 44 404 14" fill="none" stroke="#FBE3A6" stroke-width="5" stroke-dasharray="0 12"/>
+          <path class="chase" d="M-4 30 Q100 58 200 36 Q300 58 404 30" fill="none" stroke="#F2A497" stroke-width="4" stroke-dasharray="0 14" style="animation-direction:reverse"/>
         </g>
       </svg>
       <div class="hero-body">
@@ -637,7 +619,7 @@ body { margin: 0; }
       { t: '19:45', title: '晚餐：Abe chan 烤串（麻布十番）', note: '從麻布台之丘走路約 10 分。人氣店，可能要排隊。', tags: ['步行'], kind: '美食', saved: true },
       { t: '21:00', title: '麻布十番 → 目白', note: '大江戶線到新宿，再轉山手線，約 35 分。', tags: ['電車'] }
     ]},
-    { date: '12/23', wd: '三', short: '新宿', title: '新宿逛街・惠比壽聖誕夜', stay: '住 Hotel Mets 目白', art: 'xmas', items: [
+    { date: '12/23', wd: '三', short: '新宿', title: '新宿逛街・惠比壽聖誕夜', stay: '住 Hotel Mets 目白', art: 'xmas', scene: 'tree', items: [
       { t: '08:30', title: '目白 → 惠比壽', note: '山手線直達，約 25 分。', tags: ['電車'] },
       { t: '09:00', title: '早午餐：繁邦 法式吐司', note: '惠比壽南 1 丁目，3 樓。你在清單備註也有可麗餅，可以一起點。出發前確認開店時間。', tags: ['步行'], kind: '甜點', must: true, saved: true },
       { t: '10:15', title: '惠比壽 → 新宿', note: '山手線三站，約 10 分。', tags: ['電車'] },
@@ -734,14 +716,60 @@ body { margin: 0; }
     '<path class="a-steam" d="M350 286 q-6 -8 0 -16 q6 -8 0 -16 M400 282 q-6 -8 0 -16 q6 -8 0 -16 M450 286 q-6 -8 0 -16 q6 -8 0 -16" fill="none" stroke="#A8D3E6" stroke-width="4"/>' +
     '</g></svg>';
 
-  var night = document.createElement('div'), hakone = document.createElement('div'), bits = '';
-  night.className = 'scene scene-night'; hakone.className = 'scene scene-hakone';
-  night.setAttribute('aria-hidden', 'true'); hakone.setAttribute('aria-hidden', 'true');
-  for (var b = 0; b < 36; b++) {
-    bits += '<i class="bokeh" style="--l:' + rnd(0, 100).toFixed(1) + '%;--t:' + rnd(2, 58).toFixed(1) + '%;--s:' + rnd(3, 13).toFixed(1) + 'px;--c:' + pick(LIGHTS) +
-      ';--d:' + rnd(2, 5).toFixed(1) + 's;--dl:-' + rnd(0, 5).toFixed(1) + 's"></i>';
+  function lightsIn(cx, cy, rx, ry, n, r) {
+    var s = '';
+    for (var k = 0; k < n; k++) {
+      var a = Math.random() * 6.283, d = Math.sqrt(Math.random()) * .85;
+      s += '<circle class="tw" cx="' + (cx + Math.cos(a) * rx * d).toFixed(1) + '" cy="' + (cy + Math.sin(a) * ry * d).toFixed(1) + '" r="' + r + '" fill="' + pick(LIGHTS) + '" stroke="none" style="animation-delay:-' + rnd(0, 2.6).toFixed(2) + 's"/>';
+    }
+    return s;
   }
-  night.innerHTML = bits + nightLand();
+  function bokeh(n, top) {
+    var s = '';
+    for (var b = 0; b < n; b++) {
+      s += '<i class="bokeh" style="--l:' + rnd(0, 100).toFixed(1) + '%;--t:' + rnd(2, top).toFixed(1) + '%;--s:' + rnd(3, 13).toFixed(1) + 'px;--c:' + pick(LIGHTS) +
+        ';--d:' + rnd(2, 5).toFixed(1) + 's;--dl:-' + rnd(0, 5).toFixed(1) + 's"></i>';
+    }
+    return s;
+  }
+
+  /* 首頁插圖：點燈行道樹 */
+  var heroLights = document.getElementById('hero-lights');
+  if (heroLights) heroLights.innerHTML = [[173, 156, 9, 8, 4, 1.6], [227, 156, 9, 8, 4, 1.6], [152, 156, 16, 14, 8, 1.8], [248, 156, 16, 14, 8, 1.8], [112, 160, 27, 23, 16, 2.2], [288, 160, 27, 23, 16, 2.2], [48, 168, 42, 36, 28, 2.6], [352, 168, 42, 36, 28, 2.6]]
+    .map(function (t) { return lightsIn(t[0], t[1], t[2], t[3], t[4], t[5]); }).join('');
+
+  /* 12/23 聖誕夜：大聖誕樹 */
+  function treeLand() {
+    var s = '<svg class="tree-land" viewBox="0 0 400 500" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><g stroke="#1B2135" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">' +
+      '<rect x="-3000" y="420" width="6400" height="200" fill="#DDE3EE"/>';
+    [-330, -240, -150, -60, 460, 550, 640, 730].forEach(function (x) {
+      s += '<rect x="' + (x - 5) + '" y="380" width="10" height="42" fill="#2A2F45"/><ellipse cx="' + x + '" cy="360" rx="36" ry="32" fill="#2E3A5C"/>' + lightsIn(x, 360, 36, 32, 18, 2.6);
+    });
+    s += '<rect x="186" y="378" width="28" height="34" fill="#8A6A4F"/>' +
+      '<path d="M200 70 L262 170 H236 L300 270 H266 L334 380 H66 L134 270 H100 L164 170 H138 Z" fill="#3F6B57"/>';
+    for (var k = 0; k < 90; k++) {
+      var y = rnd(96, 372), hw = (y - 70) / 310 * 120;
+      s += '<circle class="tw" cx="' + (200 + rnd(-hw, hw)).toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3" fill="' + pick(LIGHTS) + '" stroke="none" style="animation-delay:-' + rnd(0, 2.6).toFixed(2) + 's"/>';
+    }
+    s += '<g fill="none" stroke="#FBE3A6" stroke-width="6" stroke-dasharray="0 13">' +
+      '<path class="chase" d="M168 140 Q205 162 236 138"/><path class="chase" d="M140 216 Q205 248 268 212" style="animation-direction:reverse"/>' +
+      '<path class="chase" d="M114 300 Q205 340 296 298"/><path class="chase" d="M92 362 Q205 398 318 356" style="animation-direction:reverse"/></g>' +
+      '<circle cx="176" cy="200" r="7" fill="#F2A497"/><circle cx="232" cy="236" r="7" fill="#A8D3E6"/><circle cx="150" cy="282" r="7" fill="#F6D27A"/><circle cx="252" cy="318" r="7" fill="#F2A497"/><circle cx="200" cy="270" r="7" fill="#B9DAA5"/><circle cx="120" cy="352" r="7" fill="#A8D3E6"/><circle cx="286" cy="350" r="7" fill="#F6D27A"/>' +
+      '<circle class="a-glow" cx="200" cy="62" r="34" fill="#FBE3A6" fill-opacity=".45" stroke="none"/>' +
+      '<path class="a-glow" d="M200 38 l7 15 l16 2 l-12 11 l3 16 l-14 -8 l-14 8 l3 -16 l-12 -11 l16 -2 z" fill="#F6D27A"/>' +
+      '<rect x="120" y="390" width="44" height="34" rx="3" fill="#F2A497"/><path d="M142 390 V424 M120 405 H164" fill="none" stroke="#FFFCF6"/>' +
+      '<rect x="234" y="384" width="50" height="40" rx="3" fill="#A8D3E6"/><path d="M259 384 V424 M234 402 H284" fill="none" stroke="#F6D27A"/>' +
+      '<rect x="168" y="402" width="30" height="22" rx="3" fill="#F6D27A"/><path d="M183 402 V424" fill="none" stroke="#F2A497"/>' +
+      '<rect x="204" y="398" width="26" height="26" rx="3" fill="#B9DAA5"/><path d="M217 398 V424" fill="none" stroke="#FFFCF6"/>';
+    return s + '</g></svg>';
+  }
+
+  var night = document.createElement('div'), hakone = document.createElement('div'), tree = document.createElement('div'), bits = '';
+  night.className = 'scene scene-night'; hakone.className = 'scene scene-hakone'; tree.className = 'scene scene-tree';
+  night.setAttribute('aria-hidden', 'true'); hakone.setAttribute('aria-hidden', 'true'); tree.setAttribute('aria-hidden', 'true');
+  night.innerHTML = bokeh(36, 58) + nightLand();
+  tree.innerHTML = bokeh(30, 40) + treeLand();
+  document.body.insertBefore(tree, document.body.firstChild);
   var wisp = '<svg viewBox="0 0 70 120"><g fill="none" stroke-linecap="round"><path d="M35 116 q-14 -18 0 -36 q14 -18 0 -36 q-12 -16 0 -32" stroke="#3E3A39" stroke-opacity=".22" stroke-width="12"/><path d="M35 116 q-14 -18 0 -36 q14 -18 0 -36 q-12 -16 0 -32" stroke="#FFFFFF" stroke-width="7"/></g></svg>';
   bits = '';
   for (var w = 0; w < 9; w++) {
@@ -759,7 +787,7 @@ body { margin: 0; }
       (10 + Math.random() * 10).toFixed(1) + 's;--dl:-' + (Math.random() * 20).toFixed(1) + 's;--x:' + (Math.random() * 60 - 30).toFixed(0) + 'px"></i>';
   }
   snow.innerHTML = flakes;
-  document.body.insertBefore(snow, hakone.nextSibling);
+  document.body.insertBefore(snow, tree.nextSibling);
 
   /* ---------- 倒數 ---------- */
   var START = new Date('2026-12-20T10:40:00+08:00').getTime();

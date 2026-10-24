@@ -87,6 +87,10 @@ button { font: inherit; color: inherit; }
   border: 2px solid transparent; border-radius: 999px;
 }
 .nav a:hover { border-color: var(--ink); background: var(--yellow-pale); }
+@media (max-width: 430px) {
+  .nav { gap: 2px; }
+  .nav a { padding: 4px 7px; }
+}
 
 /* ---------- 版面 ---------- */
 main {
@@ -162,6 +166,32 @@ body[data-hero="night"] .hero-art .art-night { opacity: 1; }
 .pass.go .pass-stub { background: var(--water-pale); }
 .pass.back .pass-stub { background: var(--coral-pale); }
 .note { font-size: 13px; color: var(--on-sky-soft); }
+
+/* ---------- 收折：航班、收藏 ---------- */
+.fold > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 18px;
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold-txt { flex: 1; min-width: 0; display: grid; gap: 4px; font-size: 14px; }
+.fold-txt b { font-weight: 400; font-size: 17px; }
+.fold-txt small { font-size: 13px; color: var(--ink-soft); }
+.fold-txt .when-open { display: none; }
+.fold[open] .fold-txt .peek { display: none; }
+.fold[open] .fold-txt .when-open { display: block; }
+.fl { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.fl .pill { flex: none; }
+.fl > span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chev {
+  flex: none; width: 34px; height: 34px; border: var(--line); border-radius: 50%;
+  background: var(--yellow); display: grid; place-items: center;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.chev svg { width: 14px; height: 14px; }
+.fold > summary:hover .chev { background: var(--yellow-pale); }
+.fold[open] .chev { transform: rotate(180deg); }
+.fold-body { margin-top: 14px; }
+.fold[open] .fold-body { animation: pop .5s cubic-bezier(.34,1.56,.64,1) both; }
 
 /* ---------- 每日行程 ---------- */
 .tabs {
@@ -256,6 +286,45 @@ body[data-hero="night"] .hero-art .art-night { opacity: 1; }
 .todo-txt { display: grid; }
 .todo-txt small { font-size: 13px; color: var(--ink-soft); }
 .todo input:checked ~ .todo-txt > span { text-decoration: line-through; text-decoration-thickness: 2px; color: var(--ink-soft); }
+/* 待辦／必買切換、刪除、新增 */
+.seg {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px;
+  border: var(--line); border-radius: 999px; background: var(--paper);
+}
+.seg button {
+  border: 0; background: transparent; border-radius: 999px; cursor: pointer;
+  padding: 6px 0 5px; font-size: 16px; display: flex; justify-content: center; align-items: center; gap: 6px;
+}
+.seg button[aria-selected="true"] { background: var(--yellow); box-shadow: inset 0 0 0 2px var(--ink); }
+.seg .n { font-size: 12px; line-height: 1.5; padding: 0 7px; border: 2px solid var(--ink); border-radius: 999px; background: var(--white); font-variant-numeric: tabular-nums; }
+.todo-row { display: flex; align-items: flex-start; gap: 4px; }
+.todo-row .todo { flex: 1; min-width: 0; }
+.del {
+  flex: none; width: 34px; height: 34px; margin-top: 2px; cursor: pointer;
+  border: 2px solid transparent; border-radius: 50%; background: transparent; color: var(--ink-soft);
+  display: grid; place-items: center;
+}
+.del:hover { border-color: var(--ink); background: var(--coral-pale); color: var(--ink); }
+.del svg { width: 14px; height: 14px; }
+.empty { font-size: 14px; color: var(--ink-soft); text-align: center; padding: 10px; }
+.undo {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 14px; padding: 6px 6px 6px 14px; min-width: 0;
+  border: 2px dashed var(--ink); border-radius: var(--r-sm); background: var(--coral-pale);
+}
+.undo[hidden] { display: none; }
+.undo span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.undo button, .add-btn { border: 2px solid var(--ink); border-radius: 999px; background: var(--white); cursor: pointer; padding: 3px 12px; flex: none; }
+.add { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding-top: 14px; border-top: 3px dashed var(--ink); }
+.add input {
+  font: inherit; font-size: 16px; min-width: 0; color: var(--ink);
+  padding: 7px 12px; border: var(--line); border-radius: var(--r-sm); background: var(--paper);
+}
+.add input::placeholder { color: var(--ink-soft); }
+.add .sub-in { grid-column: 1; }
+.add-btn { grid-column: 2; grid-row: 1 / span 2; border: var(--line); border-radius: var(--r-md); background: var(--bamboo); padding: 0 16px; font-size: 16px; }
+.add-btn:hover { background: var(--bamboo-pale); }
+.list-hint { font-size: 12.5px; color: var(--ink-soft); }
 
 /* ---------- 住宿 ---------- */
 .stays { display: grid; gap: 14px; }
@@ -366,6 +435,7 @@ body { margin: 0; }
       <a href="#days">行程</a>
       <a href="#todo">清單</a>
       <a href="#stay">住宿</a>
+      <a href="#extras">其他</a>
     </nav>
   </div>
 </header>
@@ -460,7 +530,16 @@ body { margin: 0; }
   <!-- 航班 -->
   <section id="flight">
     <h2 class="sec-title"><span class="dot" style="background:var(--water)"></span>航班</h2>
-    <div class="flights">
+    <details class="fold">
+    <summary class="card">
+      <span class="fold-txt">
+        <span class="peek fl"><span class="pill" style="background:var(--water)">去程</span><span>12/20 MM626 10:40→14:55</span></span>
+        <span class="peek fl"><span class="pill" style="background:var(--coral)">回程</span><span>12/24 MM623 16:40→20:00</span></span>
+        <span class="when-open">收起航班資訊</span>
+      </span>
+      <span class="chev" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2 5 L7 10 L12 5" fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </summary>
+    <div class="flights fold-body">
       <article class="card pass go">
         <div class="pass-main">
           <div class="pass-head"><span class="pill" style="background:var(--water)">去程</span><span>12/20（日）・樂桃 Peach</span></div>
@@ -487,6 +566,7 @@ body { margin: 0; }
       </article>
       <p class="note">時間皆為當地時間。成田的航廈請以出發前的航班資訊為準；Skyliner 先停第 2·3 航廈，再到第 1 航廈。</p>
     </div>
+    </details>
   </section>
 
   <!-- 每日行程 -->
@@ -500,26 +580,23 @@ body { margin: 0; }
     <ol class="timeline" id="timeline" role="tabpanel"></ol>
   </section>
 
-  <!-- 沒排進的收藏 -->
-  <section id="extras">
-    <h2 class="sec-title"><span class="dot" style="background:var(--yellow-pale)"></span>收藏但這次沒排進</h2>
-    <div class="card extras">
-      <p>以下是 Google 地圖清單裡的東京地點，因為不順路，這次先沒排。時間多出來可以替換。</p>
-      <div><h3>聖誕市集（這次沒排）</h3><div class="chips"><span>晴空塔</span><span>上野公園</span><span>丸之內 哈利波特</span><span>新豐洲 東京</span><span>橫濱紅磚倉庫</span><span>六本木</span><span>吉伊卡哇</span><span>目黑街角（12/11–12/13）</span></div><p style="margin-top:6px">日期取自你的截圖，可能是往年資訊，2026 年請再確認。</p></div>
-      <div><h3>原宿・表參道・澀谷</h3><div class="chips"><span>Higuma Doughnuts</span><span>CHAVATY</span><span>BASO 沾麵</span><span>neel 炸豬排吐司</span><span>Kenyan 奶茶</span><span>Graniph</span><span>STUSSY</span><span>SHEL’TTER</span><span>澀谷 PARCO・Nintendo Tokyo</span><span>Adam et Rope</span><span>極味屋</span><span>EDW yellow</span><span>Shogun Burger 澀谷</span><span>Japanese Steak Bowl</span><span>Salomon</span><span>PRANK PROJECT 青山</span></div></div>
-      <div><h3>池袋・目白・北參道（備案）</h3><div class="chips"><span>yellow 池袋 蛋包飯</span><span>Ugetsu 壽司（飯店旁）</span><span>和牛一頭燒肉 房家 大塚店</span><span>焼肉冷麺だいじゅ</span><span>Tas Yard 法式吐司</span><span>Monmouth Tea</span></div></div>
-      <div><h3>淺草・藏前・銀座・丸之內</h3><div class="chips"><span>ちんや 壽喜燒</span><span>KURAMAE CANNELE</span><span>喫茶半月</span><span>BEAMS 銀座</span><span>銀座 篝 本店</span><span>銀座 Hageten</span><span>BUTTER 丸之內</span></div></div>
-      <div><h3>惠比壽・中目黑・廣尾・麻布</h3><div class="chips"><span>Peter Luger</span><span>Tatsumi</span><span>Traveler’s Factory</span><span>Green Bean to Bar</span><span>Isshin</span><span>肉燒屋 D-29</span><span>A5 和牛焼肉 KIM</span></div></div>
-      <div><h3>其他區域</h3><div class="chips"><span>上野 Aidaya 拉麵</span><span>谷中 和栗屋</span><span>人形町 日山・Unison Tailor</span><span>赤坂 Tenshige</span><span>四谷須賀神社</span><span>錦糸町 根室花丸</span><span>柴又 帝釋天參道・川千家</span></div></div>
-    </div>
-  </section>
-
   <!-- 待辦 -->
   <section id="todo">
-    <h2 class="sec-title"><span class="dot" style="background:var(--bamboo)"></span>出發前待辦</h2>
+    <h2 class="sec-title"><span class="dot" style="background:var(--bamboo)"></span>旅行清單</h2>
     <div class="card todo-card">
+      <div class="seg" role="tablist" aria-label="切換清單" id="seg">
+        <button type="button" role="tab" aria-selected="true" aria-controls="todos" data-list="todo">待辦 <span class="n" id="n-todo">0</span></button>
+        <button type="button" role="tab" aria-selected="false" aria-controls="todos" data-list="buy" tabindex="-1">必買 <span class="n" id="n-buy">0</span></button>
+      </div>
       <div class="progress"><span class="mascot" id="todo-m"></span><span id="todo-count">0 / 0</span><div class="bar" aria-hidden="true"><i id="todo-bar"></i></div></div>
-      <ul class="todos" id="todos"></ul>
+      <ul class="todos" id="todos" role="tabpanel"></ul>
+      <div class="undo" id="undo" role="status" hidden><span id="undo-txt"></span><button type="button" id="undo-btn">復原</button></div>
+      <form class="add" id="add-form" autocomplete="off">
+        <input id="add-text" maxlength="60" placeholder="新增待辦…" aria-label="新增項目">
+        <input id="add-sub" class="sub-in" maxlength="60" placeholder="備註（可不填）" aria-label="備註">
+        <button type="submit" class="add-btn">＋ 新增</button>
+      </form>
+      <p class="list-hint">新增、刪除和打勾都只存在這支手機或這台電腦的瀏覽器裡，別人看不到。</p>
     </div>
   </section>
 
@@ -573,6 +650,30 @@ body { margin: 0; }
         </div>
       </article>
     </div>
+  </section>
+
+  <!-- 其他：沒排進的收藏（收折） -->
+  <section id="extras">
+    <h2 class="sec-title"><span class="dot" style="background:var(--yellow-pale)"></span>其他</h2>
+    <details class="fold">
+    <summary class="card">
+      <span class="fold-txt">
+        <b>收藏但這次沒排進</b>
+        <small class="peek">Google 地圖清單裡的 51 個地點，分 6 區</small>
+        <small class="when-open">點一下收起</small>
+      </span>
+      <span class="chev" aria-hidden="true"><svg viewBox="0 0 14 14"><path d="M2 5 L7 10 L12 5" fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </summary>
+    <div class="card extras fold-body">
+      <p>以下是 Google 地圖清單裡的東京地點，因為不順路，這次先沒排。時間多出來可以替換。</p>
+      <div><h3>聖誕市集（這次沒排）</h3><div class="chips"><span>晴空塔</span><span>上野公園</span><span>丸之內 哈利波特</span><span>新豐洲 東京</span><span>橫濱紅磚倉庫</span><span>六本木</span><span>吉伊卡哇</span><span>目黑街角（12/11–12/13）</span></div><p style="margin-top:6px">日期取自你的截圖，可能是往年資訊，2026 年請再確認。</p></div>
+      <div><h3>原宿・表參道・澀谷</h3><div class="chips"><span>Higuma Doughnuts</span><span>CHAVATY</span><span>BASO 沾麵</span><span>neel 炸豬排吐司</span><span>Kenyan 奶茶</span><span>Graniph</span><span>STUSSY</span><span>SHEL’TTER</span><span>澀谷 PARCO・Nintendo Tokyo</span><span>Adam et Rope</span><span>極味屋</span><span>EDW yellow</span><span>Shogun Burger 澀谷</span><span>Japanese Steak Bowl</span><span>Salomon</span><span>PRANK PROJECT 青山</span></div></div>
+      <div><h3>池袋・目白・北參道（備案）</h3><div class="chips"><span>yellow 池袋 蛋包飯</span><span>Ugetsu 壽司（飯店旁）</span><span>和牛一頭燒肉 房家 大塚店</span><span>焼肉冷麺だいじゅ</span><span>Tas Yard 法式吐司</span><span>Monmouth Tea</span></div></div>
+      <div><h3>淺草・藏前・銀座・丸之內</h3><div class="chips"><span>ちんや 壽喜燒</span><span>KURAMAE CANNELE</span><span>喫茶半月</span><span>BEAMS 銀座</span><span>銀座 篝 本店</span><span>銀座 Hageten</span><span>BUTTER 丸之內</span></div></div>
+      <div><h3>惠比壽・中目黑・廣尾・麻布</h3><div class="chips"><span>Peter Luger</span><span>Tatsumi</span><span>Traveler’s Factory</span><span>Green Bean to Bar</span><span>Isshin</span><span>肉燒屋 D-29</span><span>A5 和牛焼肉 KIM</span></div></div>
+      <div><h3>其他區域</h3><div class="chips"><span>上野 Aidaya 拉麵</span><span>谷中 和栗屋</span><span>人形町 日山・Unison Tailor</span><span>赤坂 Tenshige</span><span>四谷須賀神社</span><span>錦糸町 根室花丸</span><span>柴又 帝釋天參道・川千家</span></div></div>
+    </div>
+    </details>
   </section>
 
   <footer>
@@ -727,6 +828,15 @@ body { margin: 0; }
     { id: 'passport', text: '帶護照（購物退稅要用）', sub: '' },
     { id: 'warm', text: '保暖衣物：厚外套、手套、圍巾', sub: '箱根山上約 0–5°C' },
     { id: 'hours', text: '出發前再確認店家營業日', sub: '繁邦開店時間、千成もなか、とんかつ ひなた' }
+  ];
+
+  var BUYS = [
+    { id: 'b-seiyu', text: '西友 零食、調味料', sub: '12/20 池袋，24 小時營業' },
+    { id: 'b-yumochi', text: 'ちもと 湯もち', sub: '12/21 箱根湯本' },
+    { id: 'b-kuro', text: '大涌谷 黑玉子', sub: '12/22，現吃或帶走' },
+    { id: 'b-beams', text: 'BEAMS JAPAN 伴手禮', sub: '12/23 新宿' },
+    { id: 'b-tnf', text: 'The North Face', sub: '12/23 惠比壽' },
+    { id: 'b-monaka', text: '千成もなか 最中', sub: '12/24 大塚，回程前買' }
   ];
 
   /* ---------- 小博美：蓬鬆奶油色博美狗 ---------- */
@@ -967,30 +1077,98 @@ body { margin: 0; }
   show(start, false);
   if (m) document.getElementById('days').scrollIntoView();
 
-  /* ---------- 待辦 ---------- */
-  var KEY = 'trip-todo-2026-12', done = {};
-  try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { done = {}; }
+  /* ---------- 清單：待辦／必買，可新增、刪除，存在這台裝置 ---------- */
+  var LKEY = 'trip-lists-2026-12', lists = null;
+  try { lists = JSON.parse(localStorage.getItem(LKEY)); } catch (e) { lists = null; }
+  if (!lists || !Array.isArray(lists.todo) || !Array.isArray(lists.buy)) {
+    // 第一次開：用預設清單，並沿用舊版待辦的打勾紀錄
+    var old = {};
+    try { old = JSON.parse(localStorage.getItem('trip-todo-2026-12')) || {}; } catch (e) { old = {}; }
+    var seed = function (a) { return a.map(function (t) { return { id: t.id, text: t.text, sub: t.sub, done: !!old[t.id] }; }); };
+    lists = { todo: seed(TODOS), buy: seed(BUYS) };
+  }
+  function save() { try { localStorage.setItem(LKEY, JSON.stringify(lists)); } catch (e) {} }
+  var LABEL = {
+    todo: { done: '完成', ph: '新增待辦…', empty: '待辦清空了，可以從下面新增' },
+    buy: { done: '買到', ph: '新增想買的東西…', empty: '還沒有必買，從下面新增吧' }
+  };
   var check = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 L6.5 12 L13 4.5" fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var listEl = document.getElementById('todos');
-  listEl.innerHTML = TODOS.map(function (t) {
-    return '<li><label class="todo" for="todo-' + t.id + '"><input type="checkbox" id="todo-' + t.id + '" data-id="' + t.id + '"' + (done[t.id] ? ' checked' : '') + '>' +
-      '<span class="box">' + check + '</span><span class="todo-txt"><span>' + esc(t.text) + '</span>' + (t.sub ? '<small>' + esc(t.sub) + '</small>' : '') + '</span></label></li>';
-  }).join('');
+  var cross = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3 L11 11 M11 3 L3 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
+  var listEl = document.getElementById('todos'), segEl = document.getElementById('seg');
+  var formEl = document.getElementById('add-form'), textEl = document.getElementById('add-text'), subEl = document.getElementById('add-sub');
+  var undoEl = document.getElementById('undo'), cur = 'todo', removed = null;
+
+  function render(animate) {
+    var items = lists[cur];
+    listEl.innerHTML = items.length ? items.map(function (t, k) {
+      var id = 'li-' + esc(t.id);
+      return '<li class="todo-row" style="--i:' + k + '"><label class="todo" for="' + id + '"><input type="checkbox" id="' + id + '" data-id="' + esc(t.id) + '"' + (t.done ? ' checked' : '') + '>' +
+        '<span class="box">' + check + '</span><span class="todo-txt"><span>' + esc(t.text) + '</span>' + (t.sub ? '<small>' + esc(t.sub) + '</small>' : '') + '</span></label>' +
+        '<button type="button" class="del" data-del="' + esc(t.id) + '" aria-label="刪除「' + esc(t.text) + '」">' + cross + '</button></li>';
+    }).join('') : '<li class="empty">' + LABEL[cur].empty + '</li>';
+    textEl.placeholder = LABEL[cur].ph;
+    if (animate) { listEl.classList.remove('bounce'); void listEl.offsetWidth; listEl.classList.add('bounce'); }
+    progress();
+  }
   function progress() {
-    var n = TODOS.filter(function (t) { return done[t.id]; }).length;
-    document.getElementById('todo-count').textContent = n + ' / ' + TODOS.length + ' 完成';
-    document.getElementById('todo-bar').style.width = Math.round(n / TODOS.length * 100) + '%';
-    var pose = n === TODOS.length ? 'party' : n >= TODOS.length / 2 ? 'sparkle' : n > 0 ? 'wave' : 'cry';
+    var items = lists[cur], total = items.length;
+    var n = items.filter(function (t) { return t.done; }).length;
+    document.getElementById('todo-count').textContent = n + ' / ' + total + ' ' + LABEL[cur].done;
+    document.getElementById('todo-bar').style.width = (total ? Math.round(n / total * 100) : 0) + '%';
+    ['todo', 'buy'].forEach(function (k) {
+      document.getElementById('n-' + k).textContent = lists[k].filter(function (t) { return !t.done; }).length;
+    });
+    var pose = !total ? 'wave' : n === total ? 'party' : n >= total / 2 ? 'sparkle' : n > 0 ? 'wave' : 'cry';
+    if (cur === 'buy' && total && n < total) pose = 'shop';
     var m = document.getElementById('todo-m');
     if (m.dataset.now !== pose) { m.dataset.now = pose; m.innerHTML = mascot(pose); }
   }
-  listEl.addEventListener('change', function (e) {
-    var id = e.target.dataset.id; if (!id) return;
-    done[id] = e.target.checked;
-    try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) {}
-    progress();
+  function find(id) {
+    for (var i = 0; i < lists[cur].length; i++) if (lists[cur][i].id === id) return i;
+    return -1;
+  }
+
+  segEl.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-list]'); if (!b || b.dataset.list === cur) return;
+    cur = b.dataset.list;
+    segEl.querySelectorAll('[data-list]').forEach(function (x) {
+      var on = x === b; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1;
+    });
+    undoEl.hidden = true;
+    render(true);
   });
-  progress();
+  segEl.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    var other = segEl.querySelector('[data-list]:not([aria-selected="true"])');
+    other.click(); other.focus();
+  });
+  listEl.addEventListener('change', function (e) {
+    var i = find(e.target.dataset.id); if (i < 0) return;
+    lists[cur][i].done = e.target.checked;
+    save(); progress();
+  });
+  listEl.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-del]'); if (!b) return;
+    var i = find(b.dataset.del); if (i < 0) return;
+    removed = { list: cur, index: i, item: lists[cur].splice(i, 1)[0] };
+    save(); render();
+    document.getElementById('undo-txt').textContent = '已刪除「' + removed.item.text + '」';
+    undoEl.hidden = false;
+  });
+  document.getElementById('undo-btn').addEventListener('click', function () {
+    if (!removed) return;
+    lists[removed.list].splice(removed.index, 0, removed.item);
+    removed = null; undoEl.hidden = true;
+    save(); render();
+  });
+  formEl.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = textEl.value.trim(); if (!text) { textEl.focus(); return; }
+    lists[cur].push({ id: 'u' + Date.now().toString(36), text: text, sub: subEl.value.trim(), done: false });
+    textEl.value = ''; subEl.value = ''; undoEl.hidden = true;
+    save(); render(); textEl.focus();
+  });
+  render();
 })();
 </script>
 </body>

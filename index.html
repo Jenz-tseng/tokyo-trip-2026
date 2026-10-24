@@ -397,7 +397,7 @@ body { margin: 0; }
     <div class="tabs" role="tablist" aria-label="選擇日期" id="tabs"></div>
     <div class="card day-head" id="dayhead"></div>
     <div class="legend" aria-label="交通標籤">
-      <span class="tag air">飛機</span><span class="tag ltd">特急</span><span class="tag train">電車</span><span class="tag bus">巴士</span><span class="tag rope">纜車</span><span class="tag boat">船</span><span class="tag walk">步行</span><span class="tag kind">美食・甜點・百貨</span><span class="tag saved">★ 收藏</span>
+      <span class="tag air">飛機</span><span class="tag ltd">特急</span><span class="tag train">電車</span><span class="tag bus">巴士</span><span class="tag rope">纜車</span><span class="tag boat">船</span><span class="tag walk">步行</span><span class="tag kind">美食・甜點・百貨・聖誕</span><span class="tag saved">★ 收藏</span>
     </div>
     <ol class="timeline" id="timeline" role="tabpanel"></ol>
   </section>
@@ -407,10 +407,12 @@ body { margin: 0; }
     <h2 class="sec-title"><span class="dot" style="background:var(--yellow-pale)"></span>收藏但這次沒排進</h2>
     <div class="card extras">
       <p>以下是 Google 地圖清單裡的東京地點，因為不順路，這次先沒排。時間多出來可以替換。</p>
+      <div><h3>聖誕市集（這次沒排）</h3><div class="chips"><span>晴空塔</span><span>上野公園</span><span>丸之內 哈利波特</span><span>新豐洲 東京</span><span>橫濱紅磚倉庫</span><span>六本木</span><span>吉伊卡哇</span><span>目黑街角（12/11–12/13）</span></div><p style="margin-top:6px">日期取自你的截圖，可能是往年資訊，2026 年請再確認。</p></div>
+      <div><h3>原宿・表參道・澀谷</h3><div class="chips"><span>Higuma Doughnuts</span><span>CHAVATY</span><span>BASO 沾麵</span><span>neel 炸豬排吐司</span><span>Kenyan 奶茶</span><span>Graniph</span><span>STUSSY</span><span>SHEL’TTER</span><span>澀谷 PARCO・Nintendo Tokyo</span><span>Adam et Rope</span><span>極味屋</span><span>EDW yellow</span><span>Shogun Burger 澀谷</span><span>Japanese Steak Bowl</span><span>Salomon</span><span>PRANK PROJECT 青山</span></div></div>
       <div><h3>池袋・目白・北參道（備案）</h3><div class="chips"><span>yellow 池袋 蛋包飯</span><span>Ugetsu 壽司（飯店旁）</span><span>焼肉冷麺だいじゅ</span><span>Tas Yard 法式吐司</span><span>Monmouth Tea</span></div></div>
       <div><h3>淺草・藏前・銀座・丸之內</h3><div class="chips"><span>ちんや 壽喜燒</span><span>KURAMAE CANNELE</span><span>喫茶半月</span><span>BEAMS 銀座</span><span>銀座 篝 本店</span><span>銀座 Hageten</span><span>BUTTER 丸之內</span></div></div>
-      <div><h3>惠比壽・中目黑・廣尾・麻布</h3><div class="chips"><span>Peter Luger</span><span>Sky Lounge 38F</span><span>THE NORTH FACE CAMP</span><span>Tatsumi</span><span>Traveler’s Factory</span><span>Green Bean to Bar</span><span>Isshin</span><span>肉燒屋 D-29</span><span>Abe chan</span><span>A5 和牛焼肉 KIM</span></div></div>
-      <div><h3>其他區域</h3><div class="chips"><span>上野 Aidaya 拉麵</span><span>谷中 和栗屋</span><span>人形町 日山・Unison Tailor</span><span>赤坂 Tenshige</span><span>四谷須賀神社</span><span>芝公園 東京鐵塔拍照點</span><span>錦糸町 根室花丸</span><span>柴又 帝釋天參道・川千家</span></div></div>
+      <div><h3>惠比壽・中目黑・廣尾・麻布</h3><div class="chips"><span>Peter Luger</span><span>Tatsumi</span><span>Traveler’s Factory</span><span>Green Bean to Bar</span><span>Isshin</span><span>肉燒屋 D-29</span><span>A5 和牛焼肉 KIM</span></div></div>
+      <div><h3>其他區域</h3><div class="chips"><span>上野 Aidaya 拉麵</span><span>谷中 和栗屋</span><span>人形町 日山・Unison Tailor</span><span>赤坂 Tenshige</span><span>四谷須賀神社</span><span>錦糸町 根室花丸</span><span>柴又 帝釋天參道・川千家</span></div></div>
     </div>
   </section>
 
@@ -510,6 +512,12 @@ body { margin: 0; }
       '<path d="M26 26 l4 -2 M50 24 l3 3 M58 34 l2 -3 M30 32 l-2 3" stroke-width="2.5"/></g>' +
       '<g class="a-bob"><path d="M78 36 H112 L109 76 H81 Z" fill="#B9DAA5"/><path d="M87 36 v-6 a8 8 0 0 1 16 0 v6" fill="none"/></g>' +
       '</g></svg>',
+    xmas: '<svg viewBox="0 0 120 80" aria-hidden="true"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">' +
+      '<g class="a-bob"><path d="M60 10 L80 36 H70 L88 58 H72 L76 66 H44 L48 58 H32 L50 36 H40 Z" fill="#B9DAA5"/><rect x="54" y="66" width="12" height="10" rx="2" fill="#F6D27A"/>' +
+      '<circle cx="54" cy="34" r="3.5" fill="#F2A497"/><circle cx="68" cy="46" r="3.5" fill="#A8D3E6"/><circle cx="52" cy="54" r="3.5" fill="#F6D27A"/><circle cx="72" cy="60" r="3.5" fill="#F2A497"/></g>' +
+      '<path class="a-glow" d="M60 0 l3 6 l6 1 l-5 4 l1 6 l-5 -3 l-5 3 l1 -6 l-5 -4 l6 -1 z" fill="#F6D27A" stroke-width="2.5"/>' +
+      '<g class="a-float"><path d="M14 30 l2 5 l5 0 l-4 3 l2 5 l-5 -3 l-5 3 l2 -5 l-4 -3 l5 0 z" fill="#FFFCF6" stroke-width="2"/><path d="M100 22 l2 5 l5 0 l-4 3 l2 5 l-5 -3 l-5 3 l2 -5 l-4 -3 l5 0 z" fill="#FFFCF6" stroke-width="2"/></g>' +
+      '</g></svg>',
     gift: '<svg viewBox="0 0 120 80" aria-hidden="true"><g stroke="#3E3A39" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">' +
       '<g class="a-bob"><path d="M14 30 H62 L58 76 H18 Z" fill="#F6D27A"/><path d="M28 30 v-6 a10 10 0 0 1 20 0 v6" fill="none"/><rect x="30" y="44" width="16" height="14" rx="3" fill="#F2A497"/></g>' +
       '<g class="a-float"><path d="M74 26 h32 a6 6 0 0 1 0 12 h-32 l-7 -6 z" fill="#fff"/><path d="M88 32 l-5 13 h7 l9 -13" fill="#A8D3E6"/><path d="M72 28 l-5 -8 h6 l6 6" fill="#A8D3E6"/></g>' +
@@ -538,7 +546,7 @@ body { margin: 0; }
       { t: '15:00', title: '天悠 check-in', note: '有空可去對面的岡田美術館與足湯咖啡，約 16:30 停止入場。', tags: ['步行'] },
       { t: '18:00', title: '懷石晚餐・客房露天風呂', note: '晚餐時段需事先預約。', tags: [], kind: '美食', must: true }
     ]},
-    { date: '12/22', wd: '二', short: '環湖', title: '箱根環湖・新宿百貨', stay: '住 Hotel Mets 目白', art: 'ship', items: [
+    { date: '12/22', wd: '二', short: '環湖', title: '箱根環湖・東京鐵塔聖誕夜', stay: '住 Hotel Mets 目白', art: 'ship', items: [
       { t: '07:00', title: '早湯・早餐', note: '冬天早上最容易看到富士山，早點出發。', tags: [] },
       { t: '09:00', title: '退房，巴士 → 元箱根', note: '約 20 分。行李多可用箱根 Carry Service 送到湯本站。', tags: ['巴士'] },
       { t: '09:30', title: 'Bakery & Table 箱根', note: '湖畔麵包店，二樓有足湯座位。', tags: ['步行'], kind: '甜點' },
@@ -547,24 +555,27 @@ body { margin: 0; }
       { t: '11:45', title: '空中纜車 → 大涌谷', note: '吃黑玉子。強風或火山氣體時會停駛，改搭巴士。', tags: ['纜車'], kind: '美食' },
       { t: '13:30', title: '纜車 → 早雲山 → 強羅 → 箱根湯本', note: '想吃午餐可在強羅下車：田むら銀かつ亭（豆腐炸豬排煮）。', tags: ['纜車', '電車'] },
       { t: '15:30', title: '浪漫特快 箱根湯本 → 新宿', note: '約 17:00 抵達，行李可寄放新宿站置物櫃。', tags: ['特急'] },
-      { t: '17:15', title: 'BEAMS JAPAN 新宿・伊勢丹新宿', note: '兩家都在新宿三丁目，相隔一條街。伊勢丹的地下美食街營業到 20:00 左右。', tags: ['步行'], kind: '百貨', must: true, saved: true },
-      { t: '18:45', title: '晚餐：天婦羅 船橋屋 本店', note: '也在新宿三丁目。想換口味：Gyu Tongue Lemon（牛舌）、拉麵 龍之家（小滝橋通）、淺草今半 喜楽亭（壽喜燒）。', tags: ['步行'], kind: '美食', saved: true },
-      { t: '20:00', title: 'LUMINE 1・2・EST、NEWoMan', note: 'Ray BEAMS、PUBLIC TOKYO、MAISON SPECIAL、PRANK PROJECT、3COINS 都在裡面，多數營業到 21:00 左右。', tags: ['步行'], kind: '百貨', saved: true }
+      { t: '17:15', title: '都營大江戶線 新宿 → 赤羽橋', note: '約 20 分。過夜小包可以隨身帶，或先放新宿站置物櫃。', tags: ['電車'] },
+      { t: '17:45', title: '東京鐵塔拍照・芝公園東京聖誕市集', note: '你收藏的兩個拍照點：豆腐屋うかい門口、ENEOS 芝公園加油站，可以把點燈的東京鐵塔拍在正中間。', tags: ['步行'], kind: '聖誕', must: true, saved: true },
+      { t: '18:45', title: '麻布台之丘 聖誕市集', note: '從東京鐵塔走路約 10 分。', tags: ['步行'], kind: '聖誕', must: true },
+      { t: '19:45', title: '晚餐：Abe chan 烤串（麻布十番）', note: '從麻布台之丘走路約 10 分。人氣店，可能要排隊。', tags: ['步行'], kind: '美食', saved: true },
+      { t: '21:00', title: '麻布十番 → 目白', note: '大江戶線到新宿，再轉山手線，約 35 分。', tags: ['電車'] }
     ]},
-    { date: '12/23', wd: '三', short: '原宿', title: '原宿・表參道・澀谷', stay: '住 Hotel Mets 目白', art: 'donut', items: [
+    { date: '12/23', wd: '三', short: '新宿', title: '新宿逛街・惠比壽聖誕夜', stay: '住 Hotel Mets 目白', art: 'xmas', items: [
       { t: '08:30', title: '目白 → 惠比壽', note: '山手線直達，約 25 分。', tags: ['電車'] },
       { t: '09:00', title: '早午餐：繁邦 法式吐司', note: '惠比壽南 1 丁目，3 樓。你在清單備註也有可麗餅，可以一起點。出發前確認開店時間。', tags: ['步行'], kind: '甜點', must: true, saved: true },
-      { t: '10:00', title: '惠比壽 → 原宿', note: '山手線兩站，約 5 分。', tags: ['電車'] },
-      { t: '10:15', title: '明治神宮', note: '從原宿口進出，森林步道來回約 45 分。', tags: ['步行'], must: true },
-      { t: '11:30', title: '原宿逛街：Graniph・STUSSY・SHEL’TTER', note: 'Graniph 有聯名甜甜圈，SHEL’TTER 在 Tokyu Plaza 表參道原宿。', tags: ['步行'], kind: '百貨', saved: true },
-      { t: '13:00', title: '午餐：BASO 沾麵', note: '在明治神宮前站附近。想吃輕一點就改 neel 的炸豬排吐司（店家備註不要點咖啡）。', tags: ['步行'], kind: '美食', must: true, saved: true },
-      { t: '14:15', title: '表參道甜點：Higuma Doughnuts・CHAVATY', note: '甜甜圈配焙茶奶茶或冰淇淋，兩家走路 3 分鐘。', tags: ['步行'], kind: '甜點', must: true, saved: true },
-      { t: '15:15', title: 'PRANK PROJECT 青山旗艦店', note: '表參道站往南青山方向約 5 分。', tags: ['步行'], kind: '百貨', saved: true },
-      { t: '16:00', title: '貓街散步 → 澀谷', note: '沿途經過 Salomon 澀谷店，約 20 分走到澀谷。', tags: ['步行'], saved: true },
-      { t: '16:30', title: '澀谷 PARCO：Nintendo Tokyo・Adam et Rope', note: 'Nintendo Tokyo 在 6F，可以買皮克敏周邊；Adam et Rope 在 3F。', tags: ['步行'], kind: '百貨', must: true, saved: true },
-      { t: '17:45', title: 'Kenyan 奶茶', note: '在神南，PARCO 走路約 5 分。', tags: ['步行'], kind: '甜點', saved: true },
-      { t: '18:30', title: '晚餐：EDW yellow 蛋包飯', note: '其他選擇：極味屋 漢堡排（PARCO B1，常排隊）、Shogun Burger、Japanese Steak Bowl（牛排飯）。', tags: ['步行'], kind: '美食', saved: true },
-      { t: '20:00', title: '澀谷十字路口・宮下公園', note: '逛完搭山手線回目白，約 16 分。', tags: ['步行', '電車'] }
+      { t: '10:15', title: '惠比壽 → 新宿', note: '山手線三站，約 10 分。', tags: ['電車'] },
+      { t: '10:30', title: '伊勢丹新宿・BEAMS JAPAN', note: '都在新宿三丁目，相隔一條街。BEAMS JAPAN 約 11:00 開門，先逛伊勢丹。', tags: ['步行'], kind: '百貨', must: true, saved: true },
+      { t: '12:00', title: '午餐：天婦羅 船橋屋 本店', note: '也在新宿三丁目。', tags: ['步行'], kind: '美食', must: true, saved: true },
+      { t: '13:15', title: 'Discoat 新宿 Subnade', note: '在歌舞伎町入口的地下街，走路約 5 分。', tags: ['步行'], kind: '百貨', saved: true },
+      { t: '14:00', title: 'LUMINE EST：Ray BEAMS・3COINS', note: '就在新宿站東口上方。', tags: ['步行'], kind: '百貨', saved: true },
+      { t: '15:00', title: 'LUMINE 1・2：PUBLIC TOKYO・MAISON SPECIAL', note: '在新宿站南口。', tags: ['步行'], kind: '百貨', saved: true },
+      { t: '16:00', title: 'NEWoMan：PRANK PROJECT', note: '南口新南改札旁。', tags: ['步行'], kind: '百貨', saved: true },
+      { t: '17:15', title: '晚餐：Gyu Tongue Lemon 牛舌', note: '在西新宿。其他選擇：拉麵 龍之家、Shogun Burger、Center Beef 牛排飯、淺草今半 喜楽亭、人形町今半。聖誕前夕早點吃比較不用排。', tags: ['步行'], kind: '美食', saved: true },
+      { t: '18:45', title: '新宿 → 惠比壽', note: '山手線，約 7 分。從東口走空中步道到惠比壽花園廣場約 5 分。', tags: ['電車'] },
+      { t: '19:00', title: '惠比壽花園廣場 聖誕市集', note: '廣場中央有巴卡拉水晶吊燈，是這裡的聖誕名景。', tags: ['步行'], kind: '聖誕', must: true },
+      { t: '19:45', title: 'Sky Lounge 38F 夜景・THE NORTH FACE CAMP', note: '都在惠比壽花園廣場裡。Sky Lounge 在花園廣場大樓 38 樓。', tags: ['步行'], saved: true },
+      { t: '20:45', title: '惠比壽 → 目白', note: '山手線直達，約 25 分。', tags: ['電車'] }
     ]},
     { date: '12/24', wd: '四', short: '回家', title: '目白甜點・回家', stay: '20:00 抵達桃園', art: 'gift', items: [
       { t: '09:00', title: '退房，寄放行李', note: '', tags: [] },
@@ -585,7 +596,8 @@ body { margin: 0; }
     { id: 'tenyu', text: '預約天悠晚餐時段、確認退房時間', sub: '' },
     { id: 'mets', text: '跟 Hotel Mets 確認可寄放行李一晚', sub: '12/21 寄、12/22 取' },
     { id: 'yakiniku', text: '訂位：房家 大塚店 燒肉', sub: '12/20 19:30，抵達日晚餐' },
-    { id: 'resv', text: '查 12/23 熱門店的排隊方式', sub: '極味屋、Higuma Doughnuts、BASO 常排隊，聖誕前夕人更多' },
+    { id: 'xmas', text: '確認 2026 聖誕市集日期與時間', sub: '芝公園、麻布台之丘、惠比壽花園廣場；截圖可能是往年資訊' },
+    { id: 'resv', text: '查 Abe chan 能否訂位', sub: '12/22 晚餐，麻布十番人氣烤串' },
     { id: 'terminal', text: '確認 Peach 在成田的航廈', sub: '' },
     { id: 'suica', text: '準備 Suica／交通卡與日幣', sub: '' },
     { id: 'net', text: '日本上網 eSIM 或網卡', sub: '' },

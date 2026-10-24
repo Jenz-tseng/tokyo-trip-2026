@@ -103,7 +103,13 @@ section { scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 70px); display
 
 /* ---------- 首頁 ---------- */
 .hero { overflow: hidden; }
-.hero svg { display: block; width: 100%; height: auto; border-bottom: var(--line); background: #27304A; }
+/* 首頁插圖：12/20–21 白天富士山，12/22–24 點燈街道，跟著日期切換 */
+.hero-art { display: grid; border-bottom: var(--line); }
+.hero-art svg { grid-area: 1 / 1; display: block; width: 100%; height: auto; transition: opacity .6s ease; }
+.hero-art .art-day { background: var(--water-pale); }
+.hero-art .art-night { background: #27304A; opacity: 0; }
+body[data-hero="night"] .hero-art .art-day { opacity: 0; }
+body[data-hero="night"] .hero-art .art-night { opacity: 1; }
 .chase { animation: chase .9s linear infinite; }
 @keyframes chase { to { stroke-dashoffset: -24; } }
 .hero-body { padding: 18px 20px 22px; display: grid; gap: 14px; }
@@ -357,7 +363,50 @@ body { margin: 0; }
   <!-- 首頁 -->
   <section id="home">
     <div class="card hero">
-      <svg viewBox="0 0 400 240" role="img" aria-label="東京聖誕點燈街道：兩排掛滿燈飾的行道樹，盡頭是點燈的東京鐵塔">
+      <div class="hero-art">
+      <svg class="art-day" viewBox="0 0 400 240" role="img" aria-label="富士山、蘆之湖海賊船、鳥居與箱根空中纜車的插圖">
+        <defs>
+          <path id="cloud" d="M50 80 h60 a12 12 0 0 0 0 -24 a16 16 0 0 0 -28 -8 a12 12 0 0 0 -20 8 a12 12 0 0 0 -12 24 z" fill="#fff" stroke="#3E3A39" stroke-width="3" stroke-linejoin="round"/>
+        </defs>
+        <g fill="none" stroke="#3E3A39" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle class="a-glow" cx="360" cy="50" r="20" fill="#F6D27A"/>
+          <g class="a-drift"><use href="#cloud" x="-24" y="-22"/></g>
+          <g class="a-drift slow"><use href="#cloud" x="196" y="-8"/></g>
+          <g class="a-float">
+            <path d="M146 34 h34 a6 6 0 0 1 0 12 h-34 l-8 -8 z" fill="#fff"/>
+            <path d="M160 40 l-6 14 h8 l10 -14" fill="#F2A497"/>
+            <path d="M144 36 l-6 -9 h6 l6 7" fill="#F2A497"/>
+          </g>
+          <path d="M90 200 L176 92 Q200 80 224 92 L310 200 Z" fill="#A8D3E6"/>
+          <path d="M176 92 Q200 80 224 92 L240 112 L226 106 L214 116 L200 104 L186 116 L174 106 L160 112 Z" fill="#fff"/>
+          <line x1="-4" y1="64" x2="128" y2="112"/>
+          <g class="a-swing" style="transform-origin:60px 86px">
+            <line x1="60" y1="86" x2="60" y2="96"/>
+            <rect x="47" y="96" width="26" height="22" rx="6" fill="#F6D27A"/>
+            <rect x="52" y="101" width="16" height="8" rx="2" fill="#fff" stroke-width="2.5"/>
+          </g>
+          <path d="M-10 206 Q50 172 120 200 Q190 180 250 202 Q320 176 410 204 V214 H-10 Z" fill="#B9DAA5"/>
+          <path d="M-10 212 H410 V250 H-10 Z" fill="#DDEFF6"/>
+          <path d="M180 226 q8 -5 16 0 M250 234 q8 -5 16 0 M22 232 q8 -5 16 0" stroke-width="2.5"/>
+          <g>
+            <path d="M310 172 Q340 165 370 172 L368 179 Q340 173 312 179 Z" fill="#F2A497"/>
+            <rect x="318" y="185" width="44" height="6" rx="2" fill="#F2A497"/>
+            <rect x="323" y="177" width="7" height="42" rx="2" fill="#F2A497"/>
+            <rect x="350" y="177" width="7" height="42" rx="2" fill="#F2A497"/>
+          </g>
+          <g class="a-bob">
+            <line x1="110" y1="214" x2="110" y2="172"/>
+            <path d="M110 172 l13 4 l-13 4" fill="#F2A497" stroke-width="2.5"/>
+            <path d="M113 182 L138 210 H113 Z" fill="#fff"/>
+            <path d="M107 188 L86 210 H107 Z" fill="#F6D27A"/>
+            <path d="M66 212 H154 L143 230 H80 Z" fill="#F2A497"/>
+            <circle cx="96" cy="221" r="2.5" fill="#3E3A39" stroke="none"/>
+            <circle cx="110" cy="221" r="2.5" fill="#3E3A39" stroke="none"/>
+            <circle cx="124" cy="221" r="2.5" fill="#3E3A39" stroke="none"/>
+          </g>
+        </g>
+      </svg>
+      <svg class="art-night" viewBox="0 0 400 240" role="img" aria-label="東京聖誕點燈街道：兩排掛滿燈飾的行道樹，盡頭是點燈的東京鐵塔">
         <rect width="400" height="240" fill="#27304A"/>
         <g stroke="#1B2135" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <g fill="#FFFCF6" stroke="none" class="a-drift"><circle cx="30" cy="60" r="2"/><circle cx="120" cy="40" r="1.6"/><circle cx="260" cy="58" r="2"/><circle cx="350" cy="44" r="1.6"/><circle cx="80" cy="96" r="1.4"/><circle cx="320" cy="100" r="1.4"/></g>
@@ -378,6 +427,7 @@ body { margin: 0; }
           <path class="chase" d="M-4 30 Q100 58 200 36 Q300 58 404 30" fill="none" stroke="#FFB3A6" stroke-width="5" stroke-dasharray="0 14" style="animation-direction:reverse"/>
         </g>
       </svg>
+      </div>
       <div class="hero-body">
         <div>
           <h1>東京・箱根 冬之旅</h1>
@@ -817,6 +867,9 @@ body { margin: 0; }
   function show(i, animate) {
     var d = DAYS[i];
     document.body.dataset.scene = d.scene || 'night';
+    document.body.dataset.hero = i < 2 ? 'day' : 'night';
+    document.querySelector('.art-day').setAttribute('aria-hidden', i >= 2);
+    document.querySelector('.art-night').setAttribute('aria-hidden', i < 2);
     tabs.forEach(function (t, k) { t.setAttribute('aria-selected', k === i); t.tabIndex = k === i ? 0 : -1; });
     tlEl.setAttribute('aria-labelledby', 'tab-d' + (i + 1));
     headEl.innerHTML = '<div><h3>Day ' + (i + 1) + '・' + esc(d.title) + '</h3><p class="meta">' + d.date + '（' + d.wd + '）・' + esc(d.stay) + '</p></div>' + ART[d.art];

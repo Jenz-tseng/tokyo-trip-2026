@@ -786,7 +786,8 @@ body { margin: 0; }
     var s = '<svg class="land" viewBox="0 0 800 360" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><g stroke="#1B2135" stroke-width="3" stroke-linejoin="round">';
     [[0, 90, 150], [85, 70, 190], [150, 80, 130], [225, 70, 175], [300, 62, 120], [478, 62, 140], [535, 80, 195], [610, 70, 150], [675, 60, 180], [730, 80, 130]].forEach(function (b) {
       var x = b[0], w = b[1], y = 330 - b[2];
-      s += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + b[2] + '" fill="#36405F"/>';
+      s += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + b[2] + '" fill="#36405F"/>' +
+        '<path d="M' + (x - 3) + ' ' + (y + 2) + ' q2 -8 10 -7 h' + (w - 14) + ' q8 -1 10 7 q-' + (w / 2 + 2) + ' 5 -' + (w + 6) + ' 0 z" fill="#FFFFFF"/>';
       for (var wy = y + 14; wy < 310; wy += 22) for (var wx = x + 10; wx < x + w - 12; wx += 18) {
         if (Math.random() < .45) s += '<rect x="' + wx + '" y="' + wy + '" width="8" height="10" fill="#F6D27A" stroke="none" opacity=".85"/>';
       }
@@ -795,12 +796,8 @@ body { margin: 0; }
       '<path d="M360 330 L386 250 L393 205 L398 172 L400 158 L402 172 L407 205 L414 250 L440 330 Z" fill="#F2A497"/>' +
       '<path d="M373 290 H427 M386 250 H414 M393 205 H407" fill="none"/>' +
       '<rect x="382" y="242" width="36" height="12" rx="2" fill="#F6D27A"/><rect x="391" y="198" width="18" height="9" rx="2" fill="#F6D27A"/>';
-    for (var tx = 30; tx < 800; tx += 78) {
-      s += '<rect x="' + (tx - 5) + '" y="296" width="10" height="34" fill="#2A2F45"/><ellipse cx="' + tx + '" cy="280" rx="34" ry="30" fill="#2E3A5C"/>';
-      s += lightsIn(tx, 280, 34, 30, 18, 2.8);
-    }
-    s += '<rect x="-10" y="328" width="820" height="40" fill="#1F263B"/>' +
-      '<path d="M60 344 h40 M220 348 h60 M420 344 h50 M600 348 h40 M720 344 h50" stroke="#F6D27A" stroke-opacity=".5" stroke-linecap="round"/>';
+    s += '<path d="M-10 330 Q200 318 400 328 T810 326 V368 H-10 Z" fill="#E6EBF3"/>' +
+      '<path d="M90 344 q10 -4 20 0 M300 350 q10 -4 20 0 M520 344 q10 -4 20 0 M700 350 q10 -4 20 0" fill="none" stroke-width="2.5"/>';
     return s + '</g></svg>';
   }
 
@@ -881,7 +878,7 @@ body { margin: 0; }
   var night = document.createElement('div'), hakone = document.createElement('div'), tree = document.createElement('div'), bits = '';
   night.className = 'scene scene-night'; hakone.className = 'scene scene-hakone'; tree.className = 'scene scene-tree';
   night.setAttribute('aria-hidden', 'true'); hakone.setAttribute('aria-hidden', 'true'); tree.setAttribute('aria-hidden', 'true');
-  night.innerHTML = bokeh(36, 58) + nightLand();
+  night.innerHTML = nightLand();
   tree.innerHTML = bokeh(30, 40) + treeLand();
   document.body.insertBefore(tree, document.body.firstChild);
   var wisp = '<svg viewBox="0 0 70 120"><g fill="none" stroke-linecap="round"><path d="M35 116 q-14 -18 0 -36 q14 -18 0 -36 q-12 -16 0 -32" stroke="#3E3A39" stroke-opacity=".22" stroke-width="12"/><path d="M35 116 q-14 -18 0 -36 q14 -18 0 -36 q-12 -16 0 -32" stroke="#FFFFFF" stroke-width="7"/></g></svg>';
@@ -896,7 +893,7 @@ body { margin: 0; }
   /* ---------- 飄雪 ---------- */
   var snow = document.createElement('div'), flakes = '';
   snow.className = 'snow'; snow.setAttribute('aria-hidden', 'true');
-  for (var f = 0; f < 18; f++) {
+  for (var f = 0; f < 40; f++) {
     flakes += '<i style="--l:' + (Math.random() * 100).toFixed(1) + '%;--s:' + (5 + Math.random() * 6).toFixed(1) + 'px;--d:' +
       (10 + Math.random() * 10).toFixed(1) + 's;--dl:-' + (Math.random() * 20).toFixed(1) + 's;--x:' + (Math.random() * 60 - 30).toFixed(0) + 'px"></i>';
   }

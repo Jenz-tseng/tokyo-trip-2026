@@ -626,7 +626,7 @@ body { margin: 0; }
       <span class="tag air">飛機</span><span class="tag ltd">特急</span><span class="tag train">電車</span><span class="tag bus">巴士</span><span class="tag rope">纜車</span><span class="tag boat">船</span><span class="tag walk">步行</span><span class="tag kind">美食・甜點・百貨・聖誕</span><span class="tag saved">★ 收藏</span>
     </div>
     <div class="tl-tools">
-      <span class="tl-tip">改動只存在這台裝置</span>
+      <span class="tl-tip sync">改動只存在這台裝置</span>
       <button type="button" class="edit-toggle" id="edit-toggle" aria-pressed="false">✎ 編輯行程</button>
     </div>
     <ol class="timeline" id="timeline" role="tabpanel"></ol>
@@ -653,7 +653,7 @@ body { margin: 0; }
         <input id="add-sub" class="sub-in" maxlength="60" placeholder="備註（可不填）" aria-label="備註">
         <button type="submit" class="add-btn">＋ 新增</button>
       </form>
-      <p class="list-hint">新增、刪除和打勾都只存在這支手機或這台電腦的瀏覽器裡，別人看不到。</p>
+      <p class="list-hint sync">改動只存在這台裝置</p>
     </div>
   </section>
 
@@ -1088,13 +1088,24 @@ body { margin: 0; }
   }).join('');
   var tabs = tabsEl.querySelectorAll('.tab');
 
-  /* 行程編輯：改動存在這台裝置，可還原成預設 */
+  /* 共用同步：GitHub 版會在這裡填入 Firebase 設定，大家看到同一份；沒有設定就只存在這台裝置 */
+  var FIREBASE = null;
+  var cloud = { set: null, pending: {} };
+  function cloudSave(path, value) {
+    if (!FIREBASE) return;
+    if (cloud.set) cloud.set(path, value); else cloud.pending[path] = value;
+  }
+
+  /* 行程編輯：可還原成預設 */
   var IKEY = 'trip-days-2026-12', DEFAULT_ITEMS = JSON.stringify(DAYS.map(function (d) { return d.items; }));
   try {
     var savedDays = JSON.parse(localStorage.getItem(IKEY));
     if (Array.isArray(savedDays) && savedDays.length === DAYS.length) savedDays.forEach(function (a, k) { if (Array.isArray(a)) DAYS[k].items = a; });
   } catch (e) {}
-  function saveDays() { try { localStorage.setItem(IKEY, JSON.stringify(DAYS.map(function (d) { return d.items; }))); } catch (e) {} }
+  function saveDays() {
+    try { localStorage.setItem(IKEY, JSON.stringify(DAYS.map(function (d) { return d.items; }))); } catch (e) {}
+    cloudSave('days.d' + (curDay + 1), DAYS[curDay].items);
+  }
   var KINDS = ['美食', '甜點', '百貨', '聖誕'];
   var curDay = 0, editing = false, editIdx = null, tlUndo = null;
   var daysSec = document.getElementById('days'), tlUndoEl = document.getElementById('tl-undo');
@@ -1237,7 +1248,10 @@ body { margin: 0; }
     var seed = function (a) { return a.map(function (t) { return { id: t.id, text: t.text, sub: t.sub, done: !!old[t.id] }; }); };
     lists = { todo: seed(TODOS), buy: seed(BUYS) };
   }
-  function save() { try { localStorage.setItem(LKEY, JSON.stringify(lists)); } catch (e) {} }
+  function save() {
+    try { localStorage.setItem(LKEY, JSON.stringify(lists)); } catch (e) {}
+    cloudSave('lists.' + cur, lists[cur]);
+  }
   var LABEL = {
     todo: { done: '完成', ph: '新增待辦…', empty: '待辦清空了，可以從下面新增' },
     buy: { done: '買到', ph: '新增想買的東西…', empty: '還沒有必買，從下面新增吧' }
@@ -1319,6 +1333,48 @@ body { margin: 0; }
     save(); render(); textEl.focus();
   });
   render();
+
+  /* ---------- 共用同步（Firebase Firestore）：行程和清單大家看到同一份，有人改就即時更新 ---------- */
+  function setSync(state) {
+    var msg = { local: '改動只存在這台裝置', wait: '連線中…', ok: '☁ 大家共用，改了即時同步', err: '連不上共用資料，先存在這台裝置' }[state];
+    document.querySelectorAll('.sync').forEach(function (el) { el.textContent = msg; el.dataset.state = state; });
+  }
+  function applyRemote(data) {
+    if (data.days) DAYS.forEach(function (d, k) { var a = data.days['d' + (k + 1)]; if (Array.isArray(a)) d.items = a; });
+    if (data.lists) ['todo', 'buy'].forEach(function (k) { if (Array.isArray(data.lists[k])) lists[k] = data.lists[k]; });
+    if (editIdx === null) renderTimeline(); // 正在填表單時先不重畫，存檔或取消後會顯示最新的
+    render();
+  }
+  if (!FIREBASE) setSync('local');
+  else {
+    setSync('wait');
+    var FB = 'https://www.gstatic.com/firebasejs/10.12.2/';
+    Promise.all([import(FB + 'firebase-app.js'), import(FB + 'firebase-firestore.js')]).then(function (m) {
+      var fs = m[1], db = fs.initializeFirestore(m[0].initializeApp(FIREBASE), { ignoreUndefinedProperties: true });
+      var ref = fs.doc(db, 'trips', 'tokyo-hakone-2026'), first = true;
+      function fail() { setSync('err'); }
+      fs.onSnapshot(ref, function (snap) {
+        if (!first) {
+          if (!snap.metadata.hasPendingWrites && snap.exists()) applyRemote(snap.data());
+          return;
+        }
+        first = false;
+        cloud.set = function (path, value) {
+          var o = { updatedAt: fs.serverTimestamp() }; o[path] = value;
+          fs.updateDoc(ref, o).then(function () { setSync('ok'); }, fail);
+        };
+        if (snap.exists()) applyRemote(snap.data());
+        else {
+          // 第一次使用：把目前的行程和清單建成共用版本
+          var days = {}; DAYS.forEach(function (d, k) { days['d' + (k + 1)] = d.items; });
+          fs.setDoc(ref, { days: days, lists: lists, updatedAt: fs.serverTimestamp() }).catch(fail);
+        }
+        Object.keys(cloud.pending).forEach(function (p) { cloud.set(p, cloud.pending[p]); });
+        cloud.pending = {};
+        setSync('ok');
+      }, fail);
+    }).catch(function () { setSync('err'); });
+  }
 })();
 </script>
 </body>

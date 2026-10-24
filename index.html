@@ -1089,7 +1089,7 @@ body { margin: 0; }
   var tabs = tabsEl.querySelectorAll('.tab');
 
   /* 共用同步：GitHub 版會在這裡填入 Firebase 設定，大家看到同一份；沒有設定就只存在這台裝置 */
-  var FIREBASE = null;
+  var FIREBASE = {"apiKey":"AIzaSyBuzGslTNu2KldQXry-2MkNLScBBC3BA94","authDomain":"tokyo-trip-2026-a473a.firebaseapp.com","projectId":"tokyo-trip-2026-a473a","storageBucket":"tokyo-trip-2026-a473a.firebasestorage.app","messagingSenderId":"728705555783","appId":"1:728705555783:web:58d4d764301f8cbb5e8062"};
   var cloud = { set: null, pending: {} };
   function cloudSave(path, value) {
     if (!FIREBASE) return;

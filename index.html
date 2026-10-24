@@ -264,6 +264,54 @@ body[data-hero="night"] .hero-art .art-night { opacity: 1; }
 }
 .legend { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; }
 
+/* 行程編輯 */
+.tl-tools { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.tl-tip { font-size: 13px; color: var(--on-sky-soft); display: none; }
+.editing .tl-tip { display: inline; }
+.edit-toggle, .tl-add, .tl-reset, .tl-act button, .btn-cancel, .btn-save {
+  border: 2px solid var(--ink); border-radius: 999px; background: var(--white); cursor: pointer; font-size: 14px; padding: 4px 14px;
+}
+.edit-toggle { border-width: 3px; background: var(--yellow-pale); }
+.edit-toggle[aria-pressed="true"] { background: var(--bamboo); }
+.tl-act { display: flex; gap: 6px; margin-top: 2px; }
+.tl-act button { font-size: 13px; padding: 2px 12px; background: var(--paper); }
+.tl-act button:hover { background: var(--yellow-pale); }
+.tl-act .rm:hover { background: var(--coral-pale); }
+.tl-edit-more { display: none; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+.editing .tl-edit-more { display: flex; }
+.tl-add { border-width: 3px; background: var(--bamboo); font-size: 16px; padding: 6px 18px; }
+.tl-reset { background: var(--paper); border-style: dashed; font-size: 13px; }
+.tl-empty { font-size: 14px; color: var(--on-sky-soft); text-align: center; padding: 10px; position: relative; background: var(--sky); }
+.tl.tl-editing { grid-template-columns: 1fr; }
+.tl.tl-editing::after { display: none; }
+.tl-form {
+  position: relative; display: grid; gap: 12px;
+  background: var(--white); border: var(--line); border-radius: var(--r-md); padding: 14px 14px 16px;
+}
+.tl-form .f { display: grid; gap: 4px; font-size: 13px; color: var(--ink-soft); }
+.inp {
+  font: inherit; font-size: 16px; color: var(--ink); min-width: 0; width: 100%;
+  padding: 7px 12px; border: var(--line); border-radius: var(--r-sm); background: var(--paper);
+}
+.inp::placeholder { color: var(--ink-soft); }
+textarea.inp { resize: vertical; min-height: 70px; line-height: 1.5; }
+.f-row { display: flex; align-items: flex-end; gap: 12px; }
+.f-time { flex: 1; max-width: 170px; }
+.f-must { position: relative; cursor: pointer; padding-bottom: 6px; }
+.f-must .stamp { position: static; display: inline-block; transform: none; }
+.f-must input, .picks input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.f-must input:not(:checked) + .stamp { background: var(--white); opacity: .55; transform: none; }
+.f-must input:checked + .stamp { transform: rotate(6deg); }
+.picks { display: flex; flex-wrap: wrap; gap: 6px; }
+.picks label { cursor: pointer; }
+.picks .tag { display: inline-block; font-size: 13px; padding: 6px 10px 5px; color: var(--ink); }
+.picks input:not(:checked) + .tag { background: var(--white); opacity: .5; }
+.picks input[name="kind"]:checked + .tag { background: var(--yellow); border-style: solid; }
+.picks input:focus-visible + .tag, .f-must input:focus-visible + .stamp { outline: 3px dashed var(--coral); outline-offset: 2px; }
+.form-btns { display: flex; justify-content: flex-end; gap: 8px; }
+.btn-save { border-width: 3px; background: var(--bamboo); font-size: 16px; padding: 5px 22px; }
+.btn-cancel { font-size: 15px; }
+
 /* ---------- 待辦 ---------- */
 .todo-card { padding: 14px 16px 16px; display: grid; gap: 12px; }
 .progress { display: flex; align-items: center; gap: 10px; font-size: 14px; }
@@ -577,7 +625,16 @@ body { margin: 0; }
     <div class="legend" aria-label="交通標籤">
       <span class="tag air">飛機</span><span class="tag ltd">特急</span><span class="tag train">電車</span><span class="tag bus">巴士</span><span class="tag rope">纜車</span><span class="tag boat">船</span><span class="tag walk">步行</span><span class="tag kind">美食・甜點・百貨・聖誕</span><span class="tag saved">★ 收藏</span>
     </div>
+    <div class="tl-tools">
+      <span class="tl-tip">改動只存在這台裝置</span>
+      <button type="button" class="edit-toggle" id="edit-toggle" aria-pressed="false">✎ 編輯行程</button>
+    </div>
     <ol class="timeline" id="timeline" role="tabpanel"></ol>
+    <div class="undo" id="tl-undo" role="status" hidden><span id="tl-undo-txt"></span><button type="button" id="tl-undo-btn">復原</button></div>
+    <div class="tl-edit-more">
+      <button type="button" class="tl-add" id="tl-add">＋ 新增一個行程</button>
+      <button type="button" class="tl-reset" id="tl-reset">還原這天的預設行程</button>
+    </div>
   </section>
 
   <!-- 待辦 -->
@@ -1031,8 +1088,61 @@ body { margin: 0; }
   }).join('');
   var tabs = tabsEl.querySelectorAll('.tab');
 
+  /* 行程編輯：改動存在這台裝置，可還原成預設 */
+  var IKEY = 'trip-days-2026-12', DEFAULT_ITEMS = JSON.stringify(DAYS.map(function (d) { return d.items; }));
+  try {
+    var savedDays = JSON.parse(localStorage.getItem(IKEY));
+    if (Array.isArray(savedDays) && savedDays.length === DAYS.length) savedDays.forEach(function (a, k) { if (Array.isArray(a)) DAYS[k].items = a; });
+  } catch (e) {}
+  function saveDays() { try { localStorage.setItem(IKEY, JSON.stringify(DAYS.map(function (d) { return d.items; }))); } catch (e) {} }
+  var KINDS = ['美食', '甜點', '百貨', '聖誕'];
+  var curDay = 0, editing = false, editIdx = null, tlUndo = null;
+  var daysSec = document.getElementById('days'), tlUndoEl = document.getElementById('tl-undo');
+
+  function itemHtml(it, k) {
+    var tags = it.tags.map(function (t) { return '<span class="tag ' + TAG[t] + '">' + t + '</span>'; }).join('');
+    if (it.kind) tags += '<span class="tag kind">' + it.kind + '</span>';
+    if (it.saved) tags += '<span class="tag saved">★ 收藏</span>';
+    if (KIND_POSE[it.kind]) tags += '<span class="mascot tl-m">' + mascot(KIND_POSE[it.kind]) + '</span>';
+    return '<li class="tl' + (it.must ? ' must' : '') + '" style="--i:' + k + '">' +
+      '<div class="tl-time">' + esc(it.t) + '</div>' +
+      '<div class="tl-card">' + (it.must ? '<span class="stamp">必去</span>' : '') +
+      '<p class="tl-title">' + esc(it.title) + '</p>' +
+      (it.note ? '<p class="tl-note">' + esc(it.note) + '</p>' : '') +
+      (tags ? '<div class="tags">' + tags + '</div>' : '') +
+      (editing ? '<div class="tl-act"><button type="button" data-edit="' + k + '">✎ 編輯</button><button type="button" class="rm" data-rm="' + k + '">× 刪除</button></div>' : '') +
+      '</div></li>';
+  }
+  function formHtml(it) {
+    var picks = Object.keys(TAG).map(function (t) {
+      return '<label><input type="checkbox" name="tag" value="' + t + '"' + (it.tags.indexOf(t) >= 0 ? ' checked' : '') + '><span class="tag ' + TAG[t] + '">' + t + '</span></label>';
+    }).join('');
+    var kinds = [''].concat(KINDS).map(function (t) {
+      return '<label><input type="radio" name="kind" value="' + t + '"' + ((it.kind || '') === t ? ' checked' : '') + '><span class="tag kind">' + (t || '無') + '</span></label>';
+    }).join('');
+    return '<li class="tl tl-editing"><form class="tl-form" id="tl-form" autocomplete="off">' +
+      '<div class="f-row"><label class="f f-time">時間<input class="inp" type="time" name="t" required value="' + esc(it.t) + '"></label>' +
+      '<label class="f-must"><input type="checkbox" name="must"' + (it.must ? ' checked' : '') + '><span class="stamp">必去</span></label></div>' +
+      '<label class="f">行程名稱<input class="inp" name="title" required maxlength="60" value="' + esc(it.title) + '" placeholder="例如：午餐：拉麵"></label>' +
+      '<label class="f">說明<textarea class="inp" name="note" rows="3" maxlength="200" placeholder="可不填">' + esc(it.note || '') + '</textarea></label>' +
+      '<div class="f">交通<div class="picks">' + picks + '</div></div>' +
+      '<div class="f">類型<div class="picks">' + kinds + '</div></div>' +
+      '<div class="form-btns"><button type="button" class="btn-cancel" data-cancel>取消</button><button type="submit" class="btn-save">儲存</button></div>' +
+      '</form></li>';
+  }
+  function renderTimeline() {
+    var items = DAYS[curDay].items;
+    var html = items.map(function (it, k) { return editIdx === k ? formHtml(it) : itemHtml(it, k); }).join('');
+    if (editIdx === 'new') html += formHtml({ t: '', title: '', note: '', tags: [] });
+    if (!items.length && editIdx !== 'new') html += '<li class="tl-empty">這天還沒有行程，按「新增一個行程」加進來。</li>';
+    tlEl.innerHTML = html;
+    var f = document.getElementById('tl-form');
+    if (f) { f.scrollIntoView({ block: 'nearest' }); f.elements.title.focus({ preventScroll: true }); }
+  }
+
   function show(i, animate) {
     var d = DAYS[i];
+    curDay = i; editIdx = null; tlUndoEl.hidden = true;
     document.body.dataset.scene = d.scene || 'night';
     document.body.dataset.hero = i < 2 ? 'day' : 'night';
     document.querySelector('.art-day').setAttribute('aria-hidden', i >= 2);
@@ -1040,19 +1150,7 @@ body { margin: 0; }
     tabs.forEach(function (t, k) { t.setAttribute('aria-selected', k === i); t.tabIndex = k === i ? 0 : -1; });
     tlEl.setAttribute('aria-labelledby', 'tab-d' + (i + 1));
     headEl.innerHTML = '<div class="dh-text"><span class="mascot" style="--m:46px">' + mascot(d.mood) + '</span><div><h3>Day ' + (i + 1) + '・' + esc(d.title) + '</h3><p class="meta">' + d.date + '（' + d.wd + '）・' + esc(d.stay) + '</p></div></div>' + ART[d.art];
-    tlEl.innerHTML = d.items.map(function (it, k) {
-      var tags = it.tags.map(function (t) { return '<span class="tag ' + TAG[t] + '">' + t + '</span>'; }).join('');
-      if (it.kind) tags += '<span class="tag kind">' + it.kind + '</span>';
-      if (it.saved) tags += '<span class="tag saved">★ 收藏</span>';
-      if (KIND_POSE[it.kind]) tags += '<span class="mascot tl-m">' + mascot(KIND_POSE[it.kind]) + '</span>';
-      return '<li class="tl' + (it.must ? ' must' : '') + '" style="--i:' + k + '">' +
-        '<div class="tl-time">' + it.t + '</div>' +
-        '<div class="tl-card">' + (it.must ? '<span class="stamp">必去</span>' : '') +
-        '<p class="tl-title">' + esc(it.title) + '</p>' +
-        (it.note ? '<p class="tl-note">' + esc(it.note) + '</p>' : '') +
-        (tags ? '<div class="tags">' + tags + '</div>' : '') +
-        '</div></li>';
-    }).join('');
+    renderTimeline();
     if (animate) {
       [tlEl, headEl].forEach(function (el) { el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); });
     }
@@ -1066,6 +1164,58 @@ body { margin: 0; }
     var n = e.key === 'ArrowRight' ? cur + 1 : e.key === 'ArrowLeft' ? cur - 1 : -1;
     if (n < 0 || n >= tabs.length) return;
     e.preventDefault(); tabs[n].focus(); show(n, true);
+  });
+
+  function snapshot() { tlUndo = { day: curDay, items: JSON.stringify(DAYS[curDay].items) }; }
+  function showUndo(msg) { document.getElementById('tl-undo-txt').textContent = msg; tlUndoEl.hidden = false; }
+  document.getElementById('edit-toggle').addEventListener('click', function () {
+    editing = !editing; editIdx = null; tlUndoEl.hidden = true;
+    this.setAttribute('aria-pressed', editing);
+    this.textContent = editing ? '✓ 完成編輯' : '✎ 編輯行程';
+    daysSec.classList.toggle('editing', editing);
+    renderTimeline();
+  });
+  document.getElementById('tl-add').addEventListener('click', function () { editIdx = 'new'; tlUndoEl.hidden = true; renderTimeline(); });
+  document.getElementById('tl-reset').addEventListener('click', function () {
+    snapshot();
+    DAYS[curDay].items = JSON.parse(DEFAULT_ITEMS)[curDay];
+    editIdx = null; saveDays(); renderTimeline();
+    showUndo('已還原 ' + DAYS[curDay].date + ' 的預設行程');
+  });
+  document.getElementById('tl-undo-btn').addEventListener('click', function () {
+    if (!tlUndo) return;
+    DAYS[tlUndo.day].items = JSON.parse(tlUndo.items); tlUndo = null;
+    tlUndoEl.hidden = true; saveDays(); renderTimeline();
+  });
+  tlEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.hasAttribute('data-edit')) { editIdx = +b.dataset.edit; tlUndoEl.hidden = true; renderTimeline(); }
+    else if (b.hasAttribute('data-rm')) {
+      snapshot();
+      var it = DAYS[curDay].items.splice(+b.dataset.rm, 1)[0];
+      editIdx = null; saveDays(); renderTimeline();
+      showUndo('已刪除「' + it.title + '」');
+    } else if (b.hasAttribute('data-cancel')) { editIdx = null; renderTimeline(); }
+  });
+  tlEl.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target, items = DAYS[curDay].items;
+    var old = editIdx === 'new' ? {} : items[editIdx];
+    var it = {
+      t: f.elements.t.value, title: f.elements.title.value.trim(), note: f.elements.note.value.trim(),
+      tags: [].filter.call(f.querySelectorAll('[name=tag]'), function (x) { return x.checked; }).map(function (x) { return x.value; })
+    };
+    if (!it.t || !it.title) return;
+    var kind = (f.querySelector('[name=kind]:checked') || {}).value;
+    if (kind) it.kind = kind;
+    if (f.elements.must.checked) it.must = true;
+    if (old.saved) it.saved = true;
+    if (editIdx === 'new') items.push(it); else items[editIdx] = it;
+    // 依時間排序，同時間維持原順序
+    DAYS[curDay].items = items.map(function (x, k) { return [x, k]; })
+      .sort(function (a, b) { return a[0].t < b[0].t ? -1 : a[0].t > b[0].t ? 1 : a[1] - b[1]; })
+      .map(function (p) { return p[0]; });
+    editIdx = null; tlUndoEl.hidden = true; saveDays(); renderTimeline();
   });
 
   var start = 0, m = /^#d([1-5])$/.exec(location.hash);
